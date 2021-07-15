@@ -12,7 +12,9 @@ const Box = styled.div `
     font-size: 14px;
     color: #2E7BB4;
     text-decoration: none;
-    font-weight: 800;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
   }
   .title {
     font-size: 32px;

@@ -22,6 +22,17 @@ const GlobalStyle = createGlobalStyle`
     flex-direction: column;
   }
 
+  .expandLink{
+    font-size: 14px;
+    color: #2E7BB4;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    font-weight: 600;
+    justify-content: flex-start;
+    position: relative;
+    top: 5px
+  }
+
   img {
     max-width: 100%;
     height: auto;
