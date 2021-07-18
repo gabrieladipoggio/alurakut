@@ -109,6 +109,31 @@ export default function Home(propriedades) {
         setComunidades(comunidadesVindasDoDato)
       })
 
+       // API GraphQL - Depoimentos
+
+      fetch('https://graphql.datocms.com/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'c5c8469d27e838eb3de77f8c53a5eb',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ "query": `query {
+          allDepoimentos{
+            message,
+            creatorSlug,
+            profileImg
+          }
+        }` })
+      })
+      .then((response) => response.json())    // Pega o retorno do JSON e já retorna
+      .then((respostaCompleta) => {
+        const depoimentosVindosDoDato = respostaCompleta.data.allDepoimentos;
+        console.log(depoimentosVindosDoDato)
+        setDepoimentos(depoimentosVindosDoDato)
+      })
+
+
     }, [])
      
 
