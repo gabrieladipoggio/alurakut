@@ -3,6 +3,11 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
 
+function showDiv(){
+  console.log('Função')
+  var element = document.getElementById("campo").style.visibility = "visible";
+
+}
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -51,16 +56,22 @@ export default function LoginScreen() {
                 value = {githubUser}
                 onChange = {(evento) => {
                     setGithubUser(evento.target.value)
+                    
                 }}
             />
-
-                {githubUser.length === 0 
-                  ? 'Preencha o campo'
-                  : ''
-                }
+              <div style = {{fontSize: '12px', paddingBottom: '1em', color:'red', visibility: 'hidden'}} id="campo">
+                 Entre um usu.
+                </div>
 
                           
-            <button type="submit">
+            <button type="submit"
+            onClick =  {(evento) => {
+              if (githubUser.length === 0){
+                console.log('Zero')
+                showDiv();
+              }}
+            }
+            >
               Login
             </button>
           </form>

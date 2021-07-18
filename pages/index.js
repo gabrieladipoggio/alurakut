@@ -193,6 +193,7 @@ export default function Home(propriedades) {
             })
           }}>
 
+
             <div>
               <input 
               placeholder="Digite aqui a sua mensagem" 
@@ -201,6 +202,8 @@ export default function Home(propriedades) {
               aria-label="Digite aqui a sua mensagem"
               />
             </div>
+
+            {/* Adicionar campo para usuário */}
             
             <button>
               Publicar mensagem
@@ -242,7 +245,9 @@ export default function Home(propriedades) {
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context)
   const token = cookies.USER_TOKEN;
-
+  
+  
+  
   if (token === undefined){
     return {
       redirect: {
@@ -251,6 +256,7 @@ export async function getServerSideProps(context) {
       }
     }
   }
+  
   
   const { isAuthenticated } = await fetch("https://alurakut-gabrieladipoggio.vercel.app/api/auth", {
     headers: {
@@ -267,7 +273,8 @@ export async function getServerSideProps(context) {
       }
     }
   }
-
+  
+  
   const { githubUser } = jwt.decode(token);
   return {
     props: {
