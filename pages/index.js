@@ -6,6 +6,8 @@ import Box from '../src/components/Box'
 import MainGrid from '../src/components/MainGrid'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
 import {ProfileRelationsBoxWrapper} from '../src/components/ProfileRelations'
+import {DepoimentosBox} from '../src/components/DepoimentosBox'
+
 
 function ProfileRelationsBox(propriedades){
   return (
@@ -49,6 +51,8 @@ function ProfileSidebar(propriedades){
 export default function Home(propriedades) {
     const githubUser = propriedades.githubUser;
 
+    const githubImage = `https://github.com/${githubUser}.png`
+
     const [comunidades, setComunidades] = React.useState([]);
 
     const [seguindo, setSeguindo] = React.useState([]);
@@ -80,7 +84,7 @@ export default function Home(propriedades) {
         })
 
       
-      // API GraphQL
+      // API GraphQL - Comunidades
       fetch('https://graphql.datocms.com/', {
         method: 'POST',
         headers: {
@@ -93,7 +97,8 @@ export default function Home(propriedades) {
             id 
             title
             imageUrl
-            creatorSlug
+            creatorSlug,
+            url
           }
         }` })
       })
@@ -122,7 +127,7 @@ export default function Home(propriedades) {
           <OrkutNostalgicIconSet/>
         </Box>
         <Box>
-          <h2 class="subTitle"> O que você deseja fazer</h2>
+          <h2 class="subTitle"> Criar uma comunidade</h2>
           <form onSubmit={(e)=>{
             e.preventDefault();
             const dadosForm = new FormData(e.target);
@@ -130,6 +135,7 @@ export default function Home(propriedades) {
                 title: dadosForm.get('title'),
                 imageUrl: dadosForm.get('image'),
                 creatorSlug: githubUser,
+                url: dadosForm.get('url'),
             }
 
             fetch('/api/comunidades', {
@@ -163,6 +169,13 @@ export default function Home(propriedades) {
               aria-label="Coloque uma URL para usarmos de capa"
               />
             </div>
+            <div>
+              <input 
+              placeholder="Coloque a URL da sua comunidade" 
+              name="url" 
+              aria-label="Coloque a URL da sua comunidade"
+              />
+            </div>
             <button>
               Criar comunidade
             </button>
@@ -175,6 +188,8 @@ export default function Home(propriedades) {
             const dadosForm = new FormData(e.target);
             const depoimento = {
                 message: dadosForm.get('message'),
+                creatorSlug: githubUser,
+                profileImg: githubImage
             }
 
             fetch('/api/depoimentos', {
@@ -202,13 +217,27 @@ export default function Home(propriedades) {
               aria-label="Digite aqui a sua mensagem"
               />
             </div>
-
-            {/* Adicionar campo para usuário */}
             
             <button>
               Publicar mensagem
             </button>
           </form>
+          <br/>
+          <hr/>
+            <DepoimentosBox>
+              {depoimentos.map((itemAtual) => {
+                  return (
+                    <div className = "wrapper">
+                        <img src={itemAtual.profileImg} />
+                        <div className="message">
+                          <a href={`/communities/${itemAtual.creatorSlug}`}>@{itemAtual.creatorSlug}: </a>
+                          <span>{itemAtual.message}</span>
+                        </div>
+                    </div>
+                  )
+                })}
+        </DepoimentosBox>
+
         </Box>
       </div>
 

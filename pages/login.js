@@ -60,7 +60,7 @@ export default function LoginScreen() {
                 }}
             />
               <div style = {{fontSize: '12px', paddingBottom: '1em', color:'red', visibility: 'hidden'}} id="campo">
-                 Entre um usu.
+                  Preencha o campo
                 </div>
 
                           
