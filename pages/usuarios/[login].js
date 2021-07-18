@@ -17,7 +17,7 @@ function ProfileRelationsBox(propriedades){
           {propriedades.items.slice(0, 6).map((itemAtual) => {
             return (
               <li key={itemAtual.id} >
-                <a href={`https://alurakut-gabrieladipoggio.vercel.app/users/${itemAtual.login}`}>
+                <a href={itemAtual.html_url}>
                   <img src={itemAtual.avatar_url} />
                   <span>{itemAtual.login}</span>
                 </a>
@@ -35,7 +35,7 @@ function ProfileSidebar(propriedades){
         <img src= {`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px'}}></img>
         <hr/>
         <p>
-          <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
+          <a className="boxLink" href={`https://alurakut-gabrieladipoggio.vercel.app/${propriedades.githubUser}`}>
             @{propriedades.githubUser}
           </a>
         </p>
@@ -75,7 +75,7 @@ export default function ProfileScreen(propriedades) {
 
 
         React.useEffect(async () => {
-              const userRes = await fetch(`https://api.github.com/users/${githubUser}`);
+              const userRes = await fetch(`https://api.github.com/usuarios/${githubUser}`);
               const resposta = await userRes.json();
               setUserInfo(resposta);
               console.log(userInfo)
@@ -124,38 +124,12 @@ export default function ProfileScreen(propriedades) {
 
 
 export async function getServerSideProps(context) {
-    const cookies = nookies.get(context)
-    const token = cookies.USER_TOKEN;
-    
-    if (token === undefined){
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        }
-      }
-    }
-        
-    const { isAuthenticated } = await fetch("https://alurakut-gabrieladipoggio.vercel.app/api/auth", {
-      headers: {
-        Authorization: token,
-      },
-    })
-    .then((resposta) => resposta.json())
-    
-    if(!isAuthenticated) {
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        }
-      }
-    }
-    
-    const { githubUser } = jwt.decode(token);
+
+    const githubUser = context.query.id;
+  
     return {
       props: {
-        githubUser
+        githubUser,
       }, // will be passed to the page component as props
-    }
+    };
   }

@@ -173,7 +173,7 @@ function AlurakutMenuProfileSidebar({githubUser}) {
         <img src={`https://github.com/${githubUser}.png`} style={{ borderRadius: '8px' }} />
         <hr />
         <p>
-          <a className="boxLink" href={`/user/${githubUser}`}>
+          <a className="boxLink" href={`https://alurakut-gabrieladipoggio.vercel.app/${githubUser}`}>
             @{githubUser}
           </a>
         </p>

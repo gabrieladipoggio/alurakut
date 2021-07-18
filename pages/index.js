@@ -20,7 +20,7 @@ function ProfileRelationsBox(propriedades){
         {propriedades.items.slice(0, 6).map((itemAtual) => {
           return (
             <li key={itemAtual.id} >
-              <a href={itemAtual.html_url}>
+              <a href={`https://alurakut-gabrieladipoggio.vercel.app/usuarios/${itemAtual.login}`}>
                 <img src={itemAtual.avatar_url} />
                 <span>{itemAtual.login}</span>
               </a>
@@ -38,7 +38,7 @@ function ProfileSidebar(propriedades){
       <img src= {`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px'}}></img>
       <hr/>
       <p>
-        <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
+        <a className="boxLink" href={`https://alurakut-gabrieladipoggio.vercel.app/${propriedades.githubUser}`}>
           @{propriedades.githubUser}
         </a>
       </p>
