@@ -1,11 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
-import MainGrid from '../src/components/MainGrid'
-import {ProfileRelationsBoxWrapper} from '../src/components/ProfileRelations'
-import Box from '../src/components/Box'
-import nookies from 'nookies';
-import jwt from 'jsonwebtoken';
+import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '/src/lib/AlurakutCommons';
+import MainGrid from '/src/components/MainGrid'
+import {ProfileRelationsBoxWrapper} from '/src/components/ProfileRelations'
+import Box from '/src/components/Box'
+
 
 function ProfileRelationsBox(propriedades){
     return (
@@ -17,7 +16,7 @@ function ProfileRelationsBox(propriedades){
           {propriedades.items.slice(0, 6).map((itemAtual) => {
             return (
               <li key={itemAtual.id} >
-                <a href={itemAtual.html_url}>
+                <a href={`/usuarios/${itemAtual.login}`}>
                   <img src={itemAtual.avatar_url} />
                   <span>{itemAtual.login}</span>
                 </a>
@@ -35,7 +34,7 @@ function ProfileSidebar(propriedades){
         <img src= {`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px'}}></img>
         <hr/>
         <p>
-          <a className="boxLink" href={`https://alurakut-gabrieladipoggio.vercel.app/${propriedades.githubUser}`}>
+          <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
             @{propriedades.githubUser}
           </a>
         </p>
@@ -45,12 +44,16 @@ function ProfileSidebar(propriedades){
     )
   }
 
-export default function ProfileScreen(propriedades) {
+export default function UserPage(props) {
+    const [githubUser, setGithubUser] = React.useState(props.githubUser);
+     React.useEffect(() => setGithubUser(props.githubUser), [])
+
     const router = useRouter();
-    const githubUser = propriedades.githubUser;
     const [seguindo, setSeguindo] = React.useState([]);
     const [seguidores, setSeguidores] = React.useState([]);
     const [userInfo, setUserInfo] = React.useState([]);
+    const [userName, setUserName] = React.useState([]);
+
 
     React.useEffect(function () {
         
@@ -75,10 +78,11 @@ export default function ProfileScreen(propriedades) {
 
 
         React.useEffect(async () => {
-              const userRes = await fetch(`https://api.github.com/usuarios/${githubUser}`);
+              const userRes = await fetch(`https://api.github.com/users/${githubUser}`);
               const resposta = await userRes.json();
               setUserInfo(resposta);
-              console.log(userInfo)
+              setUserName(userInfo.login);
+              console.log(userName);
           }, []);
 
     return (
@@ -98,7 +102,7 @@ export default function ProfileScreen(propriedades) {
             <div className="welcomeArea" style={{ gridArea: 'welcome'}}>
             <Box>
                 <h2 className="title">
-                     @{githubUser}
+                     @{userInfo.login}
                 </h2>
                 <OrkutNostalgicIconSet/>
             </Box>
@@ -125,11 +129,11 @@ export default function ProfileScreen(propriedades) {
 
 export async function getServerSideProps(context) {
 
-    const githubUser = context.query.id;
-  
-    return {
-      props: {
-        githubUser,
-      }, // will be passed to the page component as props
-    };
-  }
+  const githubUser = context.query.login;
+
+  return {
+    props: {
+      githubUser,
+    }, // will be passed to the page component as props
+  };
+}

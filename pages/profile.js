@@ -17,7 +17,7 @@ function ProfileRelationsBox(propriedades){
           {propriedades.items.slice(0, 6).map((itemAtual) => {
             return (
               <li key={itemAtual.id} >
-                <a href={`https://alurakut-gabrieladipoggio.vercel.app/users/${itemAtual.login}`}>
+                <a href={`/users/${itemAtual.login}`}>
                   <img src={itemAtual.avatar_url} />
                   <span>{itemAtual.login}</span>
                 </a>

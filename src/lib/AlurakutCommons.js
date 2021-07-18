@@ -190,9 +190,9 @@ function AlurakutMenuProfileSidebar({githubUser}) {
 // ================================================================================================================
 export function AlurakutProfileSidebarMenuDefault() {
   return (
-    <AlurakutProfileSidebarMenuDefault.Wrapper>
+    <AlurakutProfileSidebarMenuDefault.Wrapper  >
       <nav>
-        <a href="/profile">
+        <a href="">
           <img src={`${BASE_URL}/icons/user.svg`} />
             Perfil
           </a>
@@ -220,7 +220,7 @@ export function AlurakutProfileSidebarMenuDefault() {
             Sair
           </a>
       </nav>
-    </AlurakutProfileSidebarMenuDefault.Wrapper>
+    </AlurakutProfileSidebarMenuDefault.Wrapper >
   )
 }
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
