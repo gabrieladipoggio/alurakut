@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 import Box from '../src/components/Box'
 import MainGrid from '../src/components/MainGrid'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
@@ -23,7 +25,7 @@ function ProfileSidebar(propriedades){
       <hr/>
       <p>
         <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
-          Gabriela Di Poggio
+          @{propriedades.githubUser}
         </a>
       </p>
       <hr/>
@@ -33,8 +35,8 @@ function ProfileSidebar(propriedades){
 }
 
 
-export default function Home() {
-    const githubUser = 'gabrieladipoggio';
+export default function Home(props) {
+    const githubUser = props.githubUser;
 
     const [comunidades, setComunidades] = React.useState([]);
 
@@ -42,7 +44,7 @@ export default function Home() {
    
     const [seguidores, setSeguidores] = React.useState([]);
       React.useEffect(function() {
-      fetch ('https://api.github.com/users/gabrieladipoggio/followers')
+      fetch (`https://api.github.com/users/gabrieladipoggio/followers`)
       .then(function(respostaDoServidor) {
       return respostaDoServidor.json();
       })
@@ -184,4 +186,33 @@ export default function Home() {
   </MainGrid>
   </>
     )
+}
+
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN;
+  
+  const { isAuthenticated } = await fetch("http://localhost:3000/api/auth", {
+    headers: {
+      Authorization: token,
+    },
+  })
+  .then((resposta) => resposta.json())
+  
+  if(!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  const { githubUser } = jwt.decode(token);
+  return {
+    props: {
+      githubUser
+    }, // will be passed to the page component as props
+  }
 }
