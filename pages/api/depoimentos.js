@@ -5,12 +5,10 @@ export default async function recebedorDeRequests(request, response) {
     const TOKEN = "ca176b97f8b3813643230030dd74e9";
     const client = new SiteClient(TOKEN);
 
-    const registroCriado = await client.items.create({       
-        itemType: "975888",
+    const registroCriado = await client.items.create({        
+        itemType: "976624",
         ... request.body,
-        // title: "Teste",
-        // imageUrl: "https://picsum.photos/200",
-        // creatorSlug: "gabrieladipoggio",
+    
     })
 
     console.log(registroCriado);

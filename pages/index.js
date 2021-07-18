@@ -13,7 +13,18 @@ function ProfileRelationsBox(propriedades){
       <h2 className = "smallTitle">
         {propriedades.title} ({propriedades.items.length})
       </h2>
-
+      <ul>
+        {propriedades.items.slice(0, 6).map((itemAtual) => {
+          return (
+            <li key={itemAtual.id} >
+              <a href={itemAtual.html_url}>
+                <img src={itemAtual.avatar_url} />
+                <span>{itemAtual.login}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </ProfileRelationsBoxWrapper>
   )
 }
@@ -35,23 +46,40 @@ function ProfileSidebar(propriedades){
 }
 
 
-export default function Home(props) {
-    const githubUser = props.githubUser;
+export default function Home(propriedades) {
+    const githubUser = propriedades.githubUser;
 
     const [comunidades, setComunidades] = React.useState([]);
 
-    const pessoasFavoritas = ['Llamrei', 'rafaballerini', 'omariosouto', 'peas', 'marcobrunodev', 'juunegreiros', 'randomuser'];
+    const [seguindo, setSeguindo] = React.useState([]);
    
     const [seguidores, setSeguidores] = React.useState([]);
-      React.useEffect(function() {
-      fetch (`https://api.github.com/users/gabrieladipoggio/followers`)
-      .then(function(respostaDoServidor) {
-      return respostaDoServidor.json();
-      })
-      .then(function(respostaCompleta){
-      setSeguidores(respostaCompleta)
-      })
 
+    const [depoimentos, setDepoimentos] = React.useState([]);
+
+    
+
+      React.useEffect(function () {
+
+      const followers = `https://api.github.com/users/${githubUser}/followers`
+      fetch(followers)
+        .then(function (respostaDoServidor) {
+          return respostaDoServidor.json();
+        })
+        .then(function (respostaCompleta) {
+          setSeguidores(respostaCompleta);
+        })
+
+      const following = `https://api.github.com/users/${githubUser}/following`
+      fetch(following)
+        .then(function (respostaDoServidor) {
+          return respostaDoServidor.json();
+        })
+        .then(function (respostaCompleta) {
+          setSeguindo(respostaCompleta);
+        })
+
+      
       // API GraphQL
       fetch('https://graphql.datocms.com/', {
         method: 'POST',
@@ -118,10 +146,8 @@ export default function Home(props) {
               const comunidadesAtualizadas = [...comunidades, comunidade];
               setComunidades(comunidadesAtualizadas)
             })
-
-            
-            
           }}>
+
             <div>
               <input 
               placeholder="Qual vai ser o nome da sua comunidade?" 
@@ -142,31 +168,55 @@ export default function Home(props) {
             </button>
           </form>
         </Box>
-      </div>
-      <div className="friendsArea" style={{ gridArea: 'friends'}}>
-          <ProfileRelationsBox title="Seguidores" items = {seguidores}/>      
-          
-        <ProfileRelationsBoxWrapper>
-          <h2 className="smallTitle">Amigos ({pessoasFavoritas.length})</h2>
-          {
-              <ul>
-              {pessoasFavoritas.slice(0,6).map((itemAtual) => {
-                return (
-                <li key={itemAtual}>
-                <a href={`/users/${itemAtual}`}>
-                    <img src={`https://github.com/${itemAtual}.png`}/>
-                    <span>{itemAtual}</span>
-                </a>
-                </li> 
-                  )
-              })}
-              </ul>
+        <Box>
+          <h2 className="subTitle">Depoimentos</h2>
+          <form onSubmit={function criaDepoimento(e) {
+            e.preventDefault();
+            const dadosForm = new FormData(e.target);
+            const depoimento = {
+                message: dadosForm.get('message'),
             }
-           {<a href="#" className="expandLink">Ver mais...</a>}
-        </ProfileRelationsBoxWrapper>
-        
+
+            fetch('/api/depoimentos', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(depoimento)
+            })
+            .then(async (response) => {
+              const dadosMsg = await response.json();
+              console.log(dadosMsg.registroCriado);
+              const depoimento = dadosMsg.registroCriado;
+              const depoimentosAtualizados = [...depoimentos, depoimento];
+              setDepoimentos(depoimentosAtualizados)
+            })
+          }}>
+
+            <div>
+              <input 
+              placeholder="Digite aqui a sua mensagem" 
+              name="message" 
+              type="text"
+              aria-label="Digite aqui a sua mensagem"
+              />
+            </div>
+            
+            <button>
+              Publicar mensagem
+            </button>
+          </form>
+        </Box>
+      </div>
+
+
+      <div className="friendsArea" style={{ gridArea: 'friends'}}>
+        <ProfileRelationsBox title="Seguidores" items = {seguidores}/>      
+        <ProfileRelationsBox title="Seguindo" items = {seguindo}/>
+
         <ProfileRelationsBoxWrapper>
-          <h2 className="smallTitle">Minhas comunidades ({comunidades.length}) </h2>
+        <h2 className = "smallTitle">Minhas comunidades ({comunidades.length})</h2>
+
           <ul>
              {comunidades.slice(0,6).map((itemAtual) => {
                 return (
