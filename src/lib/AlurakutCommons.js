@@ -192,7 +192,7 @@ export function AlurakutProfileSidebarMenuDefault() {
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper>
       <nav>
-        <a href="/">
+        <a href="/profile">
           <img src={`${BASE_URL}/icons/user.svg`} />
             Perfil
           </a>
@@ -287,7 +287,7 @@ export function OrkutNostalgicIconSet(props) {
   )
 }
 OrkutNostalgicIconSet.List = styled.ul`
-  margin-top: 32px;
+  margin-top: 15px;
   list-style: none;
   display: flex;
   justify-content: space-between;

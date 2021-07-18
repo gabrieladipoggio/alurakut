@@ -4,6 +4,7 @@ import nookies from 'nookies';
 import jwt from 'jsonwebtoken';
 import Box from '../src/components/Box'
 import MainGrid from '../src/components/MainGrid'
+import CriaComunidade from '../src/components/CriaComunidade'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
 import {ProfileRelationsBoxWrapper} from '../src/components/ProfileRelations'
 import {DepoimentosBox} from '../src/components/DepoimentosBox'
@@ -61,7 +62,18 @@ export default function Home(propriedades) {
 
     const [depoimentos, setDepoimentos] = React.useState([]);
 
+    const [userInfo, setUserInfo] = React.useState([]);
+
     
+      
+        React.useEffect(async () => {
+          const userRes = await fetch(`https://api.github.com/users/${githubUser}`);
+          const resposta = await userRes.json();
+          setUserInfo(resposta);
+          console.log(userInfo)
+      }, []);
+
+
 
       React.useEffect(function () {
 
@@ -83,7 +95,7 @@ export default function Home(propriedades) {
           setSeguindo(respostaCompleta);
         })
 
-      
+
       // API GraphQL - Comunidades
       fetch('https://graphql.datocms.com/', {
         method: 'POST',
@@ -147,65 +159,15 @@ export default function Home(propriedades) {
       <div className="welcomeArea" style={{ gridArea: 'welcome'}}>
         <Box>
           <h1 className="title">
-            Bem-vindo(a), {githubUser}
+            Bem-vindo(a), {userInfo.name}
+
           </h1>
           <OrkutNostalgicIconSet/>
         </Box>
-        <Box>
-          <h2 class="subTitle"> Criar uma comunidade</h2>
-          <form onSubmit={(e)=>{
-            e.preventDefault();
-            const dadosForm = new FormData(e.target);
-            const comunidade = {
-                title: dadosForm.get('title'),
-                imageUrl: dadosForm.get('image'),
-                creatorSlug: githubUser,
-                url: dadosForm.get('url'),
-            }
 
-            fetch('/api/comunidades', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(comunidade)
-            })
-            .then(async (response) => {
-              const dados = await response.json();
-              console.log(dados.registroCriado);
-              const comunidade = dados.registroCriado;
-              const comunidadesAtualizadas = [...comunidades, comunidade];
-              setComunidades(comunidadesAtualizadas)
-            })
-          }}>
+        <CriaComunidade/>
+    
 
-            <div>
-              <input 
-              placeholder="Qual vai ser o nome da sua comunidade?" 
-              name="title" 
-              type="text"
-              aria-label="Qual vai ser o nome da sua comunidade?"
-              />
-            </div>
-            <div>
-              <input 
-              placeholder="Coloque uma URL para usarmos de capa" 
-              name="image" 
-              aria-label="Coloque uma URL para usarmos de capa"
-              />
-            </div>
-            <div>
-              <input 
-              placeholder="Coloque a URL da sua comunidade" 
-              name="url" 
-              aria-label="Coloque a URL da sua comunidade"
-              />
-            </div>
-            <button>
-              Criar comunidade
-            </button>
-          </form>
-        </Box>
         <Box>
           <h2 className="subTitle">Depoimentos</h2>
           <form onSubmit={function criaDepoimento(e) {
