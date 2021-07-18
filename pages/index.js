@@ -192,8 +192,17 @@ export default function Home(props) {
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context)
   const token = cookies.USER_TOKEN;
+
+  if (token === undefined){
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
   
-  const { isAuthenticated } = await fetch("http://localhost:3000/api/auth", {
+  const { isAuthenticated } = await fetch("https://alurakut-gabrieladipoggio.vercel.app/api/auth", {
     headers: {
       Authorization: token,
     },
