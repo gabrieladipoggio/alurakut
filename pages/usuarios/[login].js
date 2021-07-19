@@ -1,16 +1,25 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '/src/lib/AlurakutCommons';
-import MainGrid from '/src/components/MainGrid'
+import MainGrid from '/src/components/MainGrid';
+import Perfil from '/src/components/Perfil';
 import {ProfileRelationsBoxWrapper} from '/src/components/ProfileRelations'
 import Box from '/src/components/Box'
 
+function verMais(qtdItems, id){
+  if(qtdItems >= 6){
+    var element = document.getElementById(id).style.visibility = "visible";
+  }
+}
 
 function ProfileRelationsBox(propriedades){
+  const qtdItems = propriedades.items.length;
+  const id = propriedades.id;
+
     return (
-      <ProfileRelationsBoxWrapper>
+      <ProfileRelationsBoxWrapper >
         <h2 className = "smallTitle">
-          {propriedades.title} ({propriedades.items.length})
+          {propriedades.title} ({qtdItems})
         </h2>
         <ul>
           {propriedades.items.slice(0, 6).map((itemAtual) => {
@@ -24,9 +33,14 @@ function ProfileRelationsBox(propriedades){
             );
           })}
         </ul>
+        <a id={`${id}`} href="" style={{ fontWeight:'600', fontSize:'14px', color:'#2E7BB4', marginTop:'1em', visibility: 'hidden'}}>Ver todos...</a>
+        {verMais(qtdItems, id)}
       </ProfileRelationsBoxWrapper>
     )
   }
+
+
+
 
 function ProfileSidebar(propriedades){
     return (
@@ -39,10 +53,12 @@ function ProfileSidebar(propriedades){
           </a>
         </p>
         <hr/>
-        <AlurakutProfileSidebarMenuDefault />
+        <AlurakutProfileSidebarMenuDefault  githubUser = {propriedades.githubUser} />
       </Box>
     )
   }
+
+ 
 
 export default function UserPage(props) {
     const [githubUser, setGithubUser] = React.useState(props.githubUser);
@@ -54,9 +70,16 @@ export default function UserPage(props) {
     const [userInfo, setUserInfo] = React.useState([]);
     const [userName, setUserName] = React.useState([]);
 
+    const location = userInfo.location;
+    const repos = userInfo.public_repos;
+    const name = userInfo.name;
+    const company = userInfo.company;
+    const bio = userInfo.bio;
+    const twitter = userInfo.twitter_username;
+    const blog = userInfo.blog;
+
 
     React.useEffect(function () {
-        
         const followers = `https://api.github.com/users/${githubUser}/followers`
         fetch(followers)
           .then(function (respostaDoServidor) {
@@ -95,8 +118,8 @@ export default function UserPage(props) {
             </div>
 
             <div className="friendsArea" style={{ gridArea: 'friends'}}>
-                <ProfileRelationsBox title="Seguidores" items = {seguidores}/>      
-                <ProfileRelationsBox title="Seguindo" items = {seguindo}/>
+                <ProfileRelationsBox title="Seguidores" items = {seguidores} id="followers"/>      
+                <ProfileRelationsBox title="Seguindo" items = {seguindo} id="following"/>
             </div>
 
             <div className="welcomeArea" style={{ gridArea: 'welcome'}}>
@@ -106,17 +129,20 @@ export default function UserPage(props) {
                 </h2>
                 <OrkutNostalgicIconSet/>
             </Box>
-            <Box>
-                <div>
-                    <p> Nome: {userInfo.name} </p>
-                    <p> Localização: {userInfo.location} </p>
-                    <p> Repositórios: {userInfo.public_repos} </p>
-                    <p> Empresa: {userInfo.company} </p>
-                    <p> Bio: {userInfo.bio} </p>
-                    <p> Twitter: {userInfo.twitter_username}</p>
-                    <p> Blog: {userInfo.blog}   </p>
-                </div>
-            </Box>
+            
+              <Perfil>
+                <section>
+                  <h2 className="smallTitle">Sobre mim:</h2>
+                    <div> Nome: <span>{name}</span></div>
+                    <div> Localização: {location} </div>
+                    <div> Repositórios: {repos} </div>
+                    <div> Empresa: {company} </div>
+                    <div> Bio: {bio} </div>
+                    <div> Twitter: {twitter}</div>
+                    <div> Blog: {blog}   </div>
+                </section>
+              </Perfil>
+         
             </div>
 
         </MainGrid>

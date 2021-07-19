@@ -188,11 +188,11 @@ function AlurakutMenuProfileSidebar({githubUser}) {
 // ================================================================================================================
 // AlurakutProfileSidebarMenuDefault
 // ================================================================================================================
-export function AlurakutProfileSidebarMenuDefault() {
+export function AlurakutProfileSidebarMenuDefault({githubUser}) {
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper  >
       <nav>
-        <a href="">
+        <a href={`https://github.com/${githubUser}`}>
           <img src={`${BASE_URL}/icons/user.svg`} />
             Perfil
           </a>
